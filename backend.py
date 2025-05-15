@@ -28,7 +28,7 @@ class Backend:
             print("Config file not found. Using default file names.")
 
         if data_file is None:
-            data_file = config.get("COMPONENT_CATALOGUE", "component_catalogue.json")
+            data_file = config.get("COMPONENT_CATALOGUE", "Databases/component_catalogue.json")
         if changelog_file is None:
             changelog_file = config.get("CHANGELOG", "changelog.txt")
 

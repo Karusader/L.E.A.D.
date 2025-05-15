@@ -10,7 +10,7 @@
         "TIMEOUT": 1
     },
     "FILES": {
-        "COMPONENT_CATALOGUE": "component_catalogue.json",
-        "CHANGELOG": "changelog.txt"
+        "COMPONENT_CATALOGUE": "Databases/component_catalogue.json",
+        "CHANGELOG": "Logs/changelog.txt"
     }
 }
