@@ -11,7 +11,7 @@ import os
 class part_images:
 
     def __init__(self):
-        self.imageCache = sqlite3.connect("./Resources/imageCache.sqlite")
+        self.imageCache = sqlite3.connect("./Databases/imageCache.sqlite")
 
     def getImage(self, imageURL):
         imageBlob = self.imageCache.execute("SELECT imageData FROM cache WHERE url='" + imageURL + "'").fetchone()
