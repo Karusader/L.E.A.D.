@@ -4,6 +4,8 @@ from tkinter.messagebox import askyesno
 from tkinter.filedialog import asksaveasfilename, askopenfilename
 
 import os
+import signal
+
 
 import time
 from io import BytesIO
@@ -29,10 +31,15 @@ class Frontend:
         self.root.bind("<Control-Alt-t>", self.toggle_test_mode)
         self.default_bg = self.root.cget("bg")
 
+        self.root.protocol("WM_DELETE_WINDOW", self.__exit__)
+
         # Start with the home page
         self.show_home()
 
         self.root.mainloop()
+
+    def __exit__(self):
+        os.kill(os.getpid(), signal.SIGTERM)
 
     def switch_menu(self, menu_func):
         """Helper to switch menus and record the current menu"""
