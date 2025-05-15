@@ -24,6 +24,7 @@ class Frontend:
         self.root = Tk()
         self.root.title("Component Catalogue")
         self.root.geometry("1250x750")
+        self.root.state('zoomed')
 
         self.create_menu()
         self.root.focus_force()
