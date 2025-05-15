@@ -1,0 +1,50 @@
+
+import sqlite3
+from PIL import Image
+from fake_useragent import UserAgent
+import requests
+import zlib
+import io
+import os
+
+
+class part_images:
+
+    def __init__(self):
+        self.imageCache = sqlite3.connect("./Resources/imageCache.sqlite")
+
+    def getImage(self, imageURL):
+        imageBlob = self.imageCache.execute("SELECT imageData FROM cache WHERE url='" + imageURL + "'").fetchone()
+
+        if not imageBlob:
+            #print("Not found, downloading image")
+            #Digikey will happily let you use their api with whatever, 
+            #but the moment you want a preview image, they go "NOOO YOU CANT USE A WEV SCARBAPER"
+            #I don't care though, fake the user agent.
+            ua = UserAgent()
+            headers = {'User-Agent':str(ua.chrome)}
+
+            downloadedImage = requests.get(imageURL, headers=headers, stream=True)
+
+            #This is bad, but PIL will complain for no reason if i dont write the file first...
+            tempFileName = str(zlib.crc32(bytes(imageURL, "utf-8")))
+            with open(tempFileName, "wb") as f:
+                f.write(downloadedImage.content)
+
+            imageAsPNG = None
+            im = Image.open(tempFileName)
+            with io.BytesIO() as fakeThing:
+                im.save(fakeThing, "PNG")
+                imageAsPNG = fakeThing.getvalue()
+            
+            os.remove(tempFileName)
+
+            #Insert the converted image into the sql database (finally)
+            self.imageCache.execute("INSERT INTO cache (url, imageData) VALUES('"+imageURL+"', ?)", [sqlite3.Binary(imageAsPNG)])
+            self.imageCache.commit()
+
+            imageBlob = imageAsPNG
+
+
+
+        return imageBlob
