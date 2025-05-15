@@ -1,6 +1,5 @@
 *.pyc
-*.json
 *.txt
 *.png
-config.json
-component_catalogue.json
+backups/*
+launch.json
