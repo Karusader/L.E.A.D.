@@ -16,7 +16,7 @@ class Backend:
 
         script_dir = os.path.dirname(os.path.abspath(__file__))  # Get directory of backend.py
 
-        config_path = os.path.join(script_dir, "config.json")
+        config_path = os.path.join(script_dir, "Config/config.json")
         config = {}
         if os.path.exists(config_path):
             try:
