@@ -1,1 +1,7 @@
-*.json
+*.pyc
+*.txt
+*.png
+backups/*
+launch.json
+Config/*
+Databases/*

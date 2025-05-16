@@ -8,7 +8,7 @@ from tkinter import messagebox
 
 class Digikey_API_Call:
     def __init__(self):
-        self.config_file = os.path.join(os.path.dirname(__file__), "config.json")
+        self.config_file = os.path.join(os.path.dirname(__file__), "Config/config.json")
         self.load_config()
 
     def load_config(self):

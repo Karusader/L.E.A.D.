@@ -1,9 +1,12 @@
-from tkinter import Tk, Label, Entry, Button, Canvas, StringVar, simpledialog, OptionMenu,  Menu, Frame, Toplevel, messagebox, Scrollbar, LEFT, BOTH, RIGHT, Y,  END, Checkbutton, BooleanVar, TOP, X
+from tkinter import Tk, Label, Entry, Button, Canvas, StringVar, simpledialog, OptionMenu,  Menu, Frame, Toplevel, messagebox, Scrollbar, LEFT, BOTH, RIGHT, Y,  END, Checkbutton, BooleanVar, TOP, X, PhotoImage
 from tkinter.ttk import Treeview, Combobox
 from tkinter.messagebox import askyesno
 from tkinter.filedialog import asksaveasfilename, askopenfilename
 
+from PIL import Image, ImageTk
+
 import os
+import signal
 
 import time
 from io import BytesIO
@@ -22,6 +25,7 @@ class Frontend:
         self.root = Tk()
         self.root.title("Component Catalogue")
         self.root.geometry("1250x750")
+        self.root.state('zoomed')
 
         self.create_menu()
         self.root.focus_force()
@@ -29,10 +33,15 @@ class Frontend:
         self.root.bind("<Control-Alt-t>", self.toggle_test_mode)
         self.default_bg = self.root.cget("bg")
 
+        self.root.protocol("WM_DELETE_WINDOW", self.__exit__)
+
         # Start with the home page
         self.show_home()
 
         self.root.mainloop()
+
+    def __exit__(self):
+        os.kill(os.getpid(), signal.SIGTERM)
 
     def switch_menu(self, menu_func):
         """Helper to switch menus and record the current menu"""
@@ -197,6 +206,12 @@ class Frontend:
 
         # Populate table initially with all components
         update_search_results(None)
+
+        #Select first item (or try to at least)
+        try:
+            search_tree.selection_set(search_tree.get_children()[0])
+        except:
+            print("List empty, cant display default item")
 
         # Bind delete key
         search_tree.bind("<Delete>", lambda event: self.delete_component(search_tree))
@@ -675,13 +690,17 @@ class Frontend:
         item = tree.item(selected_item[0], "values")
         part_number = item[0]  # Assuming the first column is the part_number
 
+        editMode = False
+
         # Search for the component in the backend using part_number
         component = next((comp for comp in self.backend.get_all_components() 
                         if comp["part_info"]["part_number"].strip().lower() == part_number.strip().lower()), None)
 
         edit_window = Toplevel(self.root)
-        edit_window.title("Edit Component")
-        edit_window.geometry("800x600")  # Adjust width to accommodate extra panel
+        edit_window.title("Component View")
+        edit_window.geometry("620x515") # Adjust width to accommodate extra panel
+        edit_window.resizable(width=False, height=False)
+        edit_window.attributes('-topmost', True)
 
         highlight_state = {"on": False}  # Track whether the LED is currently highlighted.
         def on_close():
@@ -692,16 +711,18 @@ class Frontend:
 
         # Left side: Part Info & Metadata fields
         fields = {}
-        Label(edit_window, text="Part Information", font=("Arial", 12, "bold")).grid(row=0, column=0, columnspan=2, pady=5)
+        Label(edit_window, text="Part Information", font=("Arial", 12, "bold")).grid(row=0, column=1, columnspan=1, pady=5)
 
         for i, key in enumerate(["part_number", "manufacturer_number", "location", "count", "type"]):
             Label(edit_window, text=key.replace("_", " ").title() + ":").grid(row=i+1, column=0, padx=10, pady=5, sticky="w")
             entry = Entry(edit_window, width=30)
             entry.insert(0, str(component["part_info"][key]))
             entry.grid(row=i+1, column=1, padx=10, pady=5, sticky="ew")
+            entry.config(state='readonly')
+            
             fields[key] = entry
 
-        Label(edit_window, text="Metadata", font=("Arial", 12, "bold")).grid(row=7, column=0, columnspan=2, pady=5)
+        Label(edit_window, text="Part Metadata", font=("Arial", 12, "bold")).grid(row=7, column=1, columnspan=1)
 
         metadata_fields = {}
         for i, key in enumerate(["price", "low_stock", "description", "photo_url", "datasheet_url", "product_url", "in_use"]):
@@ -709,11 +730,13 @@ class Frontend:
             entry = Entry(edit_window, width=40)
             entry.insert(0, str(component["metadata"].get(key, "N/A")))
             entry.grid(row=i+8, column=1, padx=10, pady=5, sticky="ew")
+            entry.config(state='readonly')
+
             metadata_fields[key] = entry
 
-        # Right side panel: Display part image and link buttons
+        # Right side panel: Display link buttons
         right_frame = Frame(edit_window, bd=2, relief="groove")
-        right_frame.grid(row=7, column=2, columnspan=2, rowspan=4, padx=10, pady=10, sticky="n")
+        right_frame.grid(row=12, column=2, columnspan=2, rowspan=2, padx=10, sticky="n")
 
         # Datasheet and Product Page buttons
         datasheet_url = component["metadata"].get("datasheet_url", "")
@@ -729,17 +752,44 @@ class Frontend:
         def toggle_highlight():
             if not highlight_state["on"]:
                 self.ledControl.set_led_on(component["part_info"]["location"], *highlight_color)
-                highlight_button.config(text="Unhighlight")
+                highlight_button.config(text="Unhighlight", relief='sunken')
                 highlight_state["on"] = True
             else:
                 self.ledControl.turn_off_led(component["part_info"]["location"])
-                highlight_button.config(text="Highlight")
+                highlight_button.config(text="Highlight", relief='raised')
                 highlight_state["on"] = False
 
-        highlight_button = Button(edit_window, text="Highlight", command=toggle_highlight)
-        highlight_button.grid(row=6, column=0, columnspan=2, pady=10)
+        
+        previewImage = ImageTk.PhotoImage(Image.open("Z:/Projects/Code/L.E.A.D/test.png").resize((125,125)))
+        #image_label = Label(edit_window, image=previewImage, height=125, width=125, bg="red")
+        #image_label.grid_columnconfigure
+
+        image_canvas = Canvas(edit_window, height=125, width=125)
+        image_canvas.create_image(0,0, image=previewImage, tags="IMG", anchor='nw')
+        image_canvas.grid(row=1, column=3, rowspan=5, columnspan=2)
+        
+
+        highlight_button = Button(edit_window, text="Highlight", command=toggle_highlight, width=10)
+        highlight_button.grid(row=6, column=3, columnspan=1, pady=10)
+    
+        def unlockList():
+            editMode = True
+            #image_canvas.create_image(0,0, image=previewImage, tags="IMG")
+            enableEditButton.config(state='disabled')
+            for key in metadata_fields:
+                metadata_fields[key].config(state='normal')
+            for key in fields:
+                fields[key].config(state='normal')
+
+        enableEditButton = Button(edit_window, text="Unlock", command=unlockList)
+        enableEditButton.grid(row=6, column=4)
 
         def save_changes():
+
+            if not editMode:
+                edit_window.destroy()
+                return
+
             updated_data = {"part_info": {}, "metadata": {}}
             for key, entry in fields.items():
                 updated_data["part_info"][key] = entry.get().strip()
@@ -776,7 +826,7 @@ class Frontend:
                 updated_data["part_info"]["type"]
             ))
 
-        Button(edit_window, text="Save Changes", command=save_changes).grid(row=6, column=2, columnspan=2, pady=10)
+        Button(edit_window, text="Save Changes", command=save_changes).grid(row=14, column=4, columnspan=1, pady=10)
         edit_window.bind("<Return>", lambda event: save_changes())
 
     def delete_component(self, tree):
