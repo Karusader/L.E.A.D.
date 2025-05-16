@@ -8,6 +8,7 @@ from part_images import imageCache
 
 import os
 import signal
+import io
 
 import time
 from io import BytesIO
@@ -761,10 +762,10 @@ class Frontend:
                 highlight_button.config(text="Highlight", relief='raised')
                 highlight_state["on"] = False
 
-        self.imageCache.getImage(metadata_fields['photo_url'].get())
-
+        imageFromCache = io.BytesIO(self.imageCache.getImage(metadata_fields['photo_url'].get()))
+        print(type(imageFromCache))
         
-        previewImage = ImageTk.PhotoImage(Image.open("Z:/Projects/Code/L.E.A.D/test.png").resize((125,125)))
+        previewImage = ImageTk.PhotoImage(Image.open(imageFromCache).resize((125,125)))
         #image_label = Label(edit_window, image=previewImage, height=125, width=125, bg="red")
         #image_label.grid_columnconfigure
 

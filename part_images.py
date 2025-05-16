@@ -43,8 +43,7 @@ class imageCache:
             self.imageCache.execute("INSERT INTO cache (url, imageData) VALUES('"+imageURL+"', ?)", [sqlite3.Binary(imageAsPNG)])
             self.imageCache.commit()
 
-            imageBlob = imageAsPNG
+            imageBlob = self.imageCache.execute("SELECT imageData FROM cache WHERE url='" + imageURL + "'").fetchone()
 
-
-
-        return imageBlob
+        #Im using fetchone in what scenario would it return more then one item??
+        return imageBlob[0]
