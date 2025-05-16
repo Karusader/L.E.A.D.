@@ -775,13 +775,13 @@ class Frontend:
         def unlockList():
             editMode = True
             #image_canvas.create_image(0,0, image=previewImage, tags="IMG")
-            enableEditButton.config(state='disabled')
+            enableEditButton.config(state='disabled', relief='sunken')
             for key in metadata_fields:
                 metadata_fields[key].config(state='normal')
             for key in fields:
                 fields[key].config(state='normal')
 
-        enableEditButton = Button(edit_window, text="Unlock", command=unlockList)
+        enableEditButton = Button(edit_window, text="Edit Info", command=unlockList)
         enableEditButton.grid(row=6, column=4)
 
         def save_changes():
