@@ -4,6 +4,7 @@ from tkinter.messagebox import askyesno
 from tkinter.filedialog import asksaveasfilename, askopenfilename
 
 from PIL import Image, ImageTk
+from part_images import imageCache
 
 import os
 import signal
@@ -20,6 +21,7 @@ class Frontend:
         self.current_frame = None
         self.current_menu = None
         self.test_mode = False
+        self.imageCache = imageCache()
 
         # Initialize Tkinter window
         self.root = Tk()
@@ -758,6 +760,8 @@ class Frontend:
                 self.ledControl.turn_off_led(component["part_info"]["location"])
                 highlight_button.config(text="Highlight", relief='raised')
                 highlight_state["on"] = False
+
+        self.imageCache.getImage(metadata_fields['photo_url'].get())
 
         
         previewImage = ImageTk.PhotoImage(Image.open("Z:/Projects/Code/L.E.A.D/test.png").resize((125,125)))

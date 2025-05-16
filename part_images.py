@@ -8,7 +8,7 @@ import io
 import os
 
 
-class part_images:
+class imageCache:
 
     def __init__(self):
         self.imageCache = sqlite3.connect("./Databases/imageCache.sqlite")

@@ -1,7 +1,10 @@
 *.pyc
 *.txt
 *.png
+*.json
+*.sqlite
 backups/*
 launch.json
 Config/*
 Databases/*
+Databases/imageCache.sqlite
