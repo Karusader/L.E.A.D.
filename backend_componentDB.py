@@ -18,7 +18,7 @@ class componentDB:
 	        "manufacturer_number"	TEXT UNIQUE,
 	        "price"	INTEGER,
 	        "description"	TEXT,
-	        "detailed_description"	INTEGER,
+	        "detailed_description"	TEXT,
 	        "type"	TEXT,
 	        "photo_url"	TEXT,
 	        "datasheet_url"	TEXT,
