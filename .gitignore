@@ -7,3 +7,4 @@ launch.json
 Config/config.json
 Databases/*
 Databases/imageCache.sqlite
+!requirements.txt
