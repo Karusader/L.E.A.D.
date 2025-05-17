@@ -25,7 +25,7 @@ class imageCache:
                                 ); """)
 
     def getImage(self, imageURL):
-        imageBlob = self.imageCache.execute("SELECT imageData FROM cache WHERE url='" + imageURL + "'").fetchone()
+        imageBlob = self.imageCache.execute("SELECT imageData FROM cache WHERE url = ?", [imageURL]).fetchone()
 
         if not imageBlob:
             #print("Not found, downloading image")
@@ -51,10 +51,10 @@ class imageCache:
             os.remove(tempFileName)
 
             #Insert the converted image into the sql database (finally)
-            self.imageCache.execute("INSERT INTO cache (url, imageData) VALUES('"+imageURL+"', ?)", [sqlite3.Binary(imageAsPNG)])
+            self.imageCache.execute("INSERT INTO cache (url, imageData) VALUES(?, ?)", [imageURL, [sqlite3.Binary(imageAsPNG)]]  )
             self.imageCache.commit()
 
-            imageBlob = self.imageCache.execute("SELECT imageData FROM cache WHERE url='" + imageURL + "'").fetchone()
+            imageBlob = self.imageCache.execute("SELECT imageData FROM cache WHEREurl = ?", [imageURL]).fetchone()
 
         #Im using fetchone in what scenario would it return more then one item??
         return imageBlob[0]
