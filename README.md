@@ -12,8 +12,8 @@ L.E.A.D. is a free, open source project designed to simplify the management of e
 + Barcode Scanning
 
 # How It Works
-## Google Web App & DigiKey API Integration
-The system interfaces with DigiKey’s API via a Google Web App. When a user inputs a part number, L.E.A.D. sends a request to the Google Web App, which acts as a bridge between the software and DigiKey's API. The response includes detailed product information such as pricing, stock availability, manufacturer details, and datasheets. This data is then stored in the component catalog for future reference.
+## DigiKey API Integration
+The system interfaces with DigiKey’s API. When a user inputs a part number, L.E.A.D. sends a request to DigiKey's API. The response includes detailed product information such as pricing, stock availability, manufacturer details, and datasheets. This data is then stored in the component catalog for future reference.
 
 ## Barcode Parsing & Manual Entry
 The system supports barcode scanning to quickly decode component information. The barcode decoder extracts part numbers and quantities, which are then verified against the existing database. If a part is not found in DigiKey’s database, users are given the option to manually add it. The system also automatically assigns storage locations for newly added parts.
@@ -32,16 +32,17 @@ A search function enables users to filter parts by part number, location, or typ
 Bulk operations allow for scanning and adding multiple parts at once.
 
 # Setup
-This guide will walk you through downloading the code from GitHub, setting up a Google Apps Script for API communication, getting a DigiKey API key, and configuring the config file to link everything together.
+This guide will walk you through downloading the code from GitHub, getting a DigiKey API key, and configuring the config file to link everything together.
 
 ## Downloading and Running Program
-This is a basic overview on downloading and running the program. This is for begginers feel free to ignore.
+This is a basic overview on downloading and running the program. This is for beginners feel free to ignore.
 
 ### Dowloading From GitHub
 1. Click on the Code button near the top right of the page
 2. Select Download zip
 3. Extract the zip file
-4. Run the main file to start the program
+4. Install requirements.txt
+5. Run the main file to start the program
 
 ## Digikey API
 To interact with DigiKey's API, you need an API key.
@@ -58,20 +59,9 @@ Create a DigiKey Developer Account:
 4. Name you App and enable "ProductInformation V4"
 5. Save and go to view tab here you will find your Client Id and Client Secret. Save these as they are needed for the your app script
 
-## Google Web App
-The Google Apps Script acts as a bridge between your Python application and DigiKey’s API, allowing you to fetch component data.
-
-### Create and Deploy the Google Web App
-1. Go to Google [Apps Script](https://script.google.com/home)
-2. Select Creat New Project
-3. Copy the code from the [Google Web App Code](https://github.com/Snufelupigus/L.E.A.D./blob/main/Google%20Web%20App%20Code) and paste it into your app script
-4. Fill in the Blank Client ID and Client Secret sections
-![image](https://github.com/user-attachments/assets/1192769b-a223-4f01-8827-9c9283761515)
-![image](https://github.com/user-attachments/assets/cf9f7677-46c9-4e79-bc68-a46394e17f38)
-5. Select "Deploy" in the top right and click "New Deployment"
-6. Click on "Select Type" and then click "Web App"
-7. Make sure that "Execute As" is set to me, and "Who Has Access" is set to Anyone
-8. Copy the Web App link and paste it into the provided space in the config.json file
+### Digikey API Setup
+1. Rename config_template.json in the config directory to config.json
+2. Fill in the Blank Client ID and Client Secret sections in config.json
 
 # Using L.E.A.D.
 After opening the program you are left on a main menu page that lists types of components in the system. As well as any that have reached low stock. Your main navigation is throught the navigation button at the top left, the Add menu allows you to manually add components and they're data. Alternatively you can scan in a barcode. The search menu is fairly self explanitory. In the add and search menues you can double click to ecit or highlight a component.

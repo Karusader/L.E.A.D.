@@ -665,17 +665,17 @@ class Frontend:
 
         highlight_color = (0, 255, 0)
 
-        highlight_button = Button(self.details_frame, text="Highlight")
+        highlight_button = Button(self.details_frame, text="Highlight", width=10)
         highlight_button.grid(row=6, column=0, columnspan=2, pady=10, sticky="e")
 
         def toggle_highlight():
             if not highlight_state["on"]:
                 self.ledControl.set_led_on(component["part_info"]["location"], *highlight_color)
-                highlight_button.config(text="Unhighlight")
+                highlight_button.config(text="Unhighlight", relief='sunken')
                 highlight_state["on"] = True
             else:
                 self.ledControl.turn_off_led(component["part_info"]["location"])
-                highlight_button.config(text="Highlight")
+                highlight_button.config(text="Highlight", relief='raised')
                 highlight_state["on"] = False
 
         highlight_button.config(command=toggle_highlight)
