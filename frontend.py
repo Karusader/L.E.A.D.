@@ -671,7 +671,7 @@ class Frontend:
         def toggle_highlight():
             if not highlight_state["on"]:
                 self.ledControl.set_led_on(component["part_info"]["location"], *highlight_color)
-                highlight_button.config(text="Unhighlight", relief='sunken')
+                highlight_button.config(text="Highlight", relief='sunken')
                 highlight_state["on"] = True
             else:
                 self.ledControl.turn_off_led(component["part_info"]["location"])
@@ -755,7 +755,7 @@ class Frontend:
         def toggle_highlight():
             if not highlight_state["on"]:
                 self.ledControl.set_led_on(component["part_info"]["location"], *highlight_color)
-                highlight_button.config(text="Unhighlight", relief='sunken')
+                highlight_button.config(text="Highlight", relief='sunken')
                 highlight_state["on"] = True
             else:
                 self.ledControl.turn_off_led(component["part_info"]["location"])
