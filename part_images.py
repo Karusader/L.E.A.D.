@@ -11,7 +11,18 @@ import os
 class imageCache:
 
     def __init__(self):
+        try:
+            os.makedirs("./Databases/")
+        except FileExistsError:
+        # directory already exists
+            pass
+
         self.imageCache = sqlite3.connect("./Databases/imageCache.sqlite")
+        self.imageCache.execute("""CREATE TABLE IF NOT EXISTS "cache" (
+	                            "url"	TEXT NOT NULL UNIQUE,
+	                            "imageData"	BLOB NOT NULL,
+	                            PRIMARY KEY("url")
+                                ); """)
 
     def getImage(self, imageURL):
         imageBlob = self.imageCache.execute("SELECT imageData FROM cache WHERE url='" + imageURL + "'").fetchone()
