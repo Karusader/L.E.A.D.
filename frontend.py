@@ -631,42 +631,51 @@ class Frontend:
             widget.destroy()
 
         # Create two subframes: one for Part Info and one for Meta Data
-        part_info_frame = Frame(self.details_frame, bd=1, relief="solid", padx=5, pady=5, width=250)
+        part_info_frame = Frame(self.details_frame, bd=1, relief="solid", padx=5, pady=5, width=100)
         part_info_frame.grid(row=0, column=0, sticky="nsew", padx=5, pady=5)
-        meta_frame = Frame(self.details_frame, bd=1, relief="solid", padx=5, width=250, pady=5)
-        meta_frame.grid(row=0, column=1, sticky="nsew", padx=5, pady=5)
-        self.details_frame.columnconfigure(0, weight=1, minsize=250)
-        self.details_frame.columnconfigure(1, weight=1, minsize=250)
+        #meta_frame = Frame(self.details_frame, bd=1, relief="solid", padx=5, width=250, pady=5)
+        #meta_frame.grid(row=0, column=1, sticky="nsew", padx=5, pady=5)
+        self.details_frame.columnconfigure(0, weight=1, minsize=100)
+        #self.details_frame.columnconfigure(1, weight=1, minsize=250)
         #meta_frame.grid_propagate(False)
         #part_info_frame.grid_propagate(False)
 
         # Headers
-        Label(part_info_frame, text="Part Info", font=("Arial", 12, "bold")).grid(row=0, column=0, columnspan=2, pady=0)
-        Label(meta_frame, text="Meta Data", font=("Arial", 12, "bold")).grid(row=0, column=0, columnspan=2, pady=0)
+        Label(part_info_frame, text="Part Info", font=("Arial", 12, "bold")).grid(row=0, column=0, padx=10,)
+        #Label(meta_frame, text="Meta Data", font=("Arial", 12, "bold")).grid(row=0, column=0, columnspan=2, pady=0)
 
         # Populate Part Info (each key-value pair on its own row)
-        row_idx = 1
-        for key, value in component["part_info"].items():
-            Label(part_info_frame, text=f"{key}:", anchor="w").grid(row=row_idx, column=0, sticky="w", padx=2, pady=2)
-            Label(part_info_frame, text=f"{value}", anchor="w").grid(row=row_idx, column=0, sticky="w", padx=(100,2), pady=2)
-            row_idx += 1
+        #row_idx = 1
+        #for key, value in component["part_info"].items():
+        #    Label(part_info_frame, text=f"{key}:", anchor="w").grid(row=row_idx, column=0, sticky="w", padx=2, pady=2)
+        #    Label(part_info_frame, text=f"{value}", anchor="w").grid(row=row_idx, column=0, sticky="w", padx=(100,2), pady=2)
+        #    row_idx += 1
+
+        Label(part_info_frame, text="Digikey Part:", anchor="w").grid(row=1, column=0, sticky='e')
+        Label(part_info_frame, text=component["part_info"]["part_number"], anchor="w").grid(row=1, column=1, sticky='w')
+        Label(part_info_frame, text="In Stock:", anchor="w").grid(row=2, column=0, sticky='e')
+        Label(part_info_frame, text=component["part_info"]["count"], anchor="w",).grid(row=2, column=1, sticky='w')
+        Label(part_info_frame, text="Part Type:", anchor="w").grid(row=3, column=0, sticky='e')
+        Label(part_info_frame, text=component["part_info"]["type"], anchor="w").grid(row=3, column=1, sticky='w')
+        Label(part_info_frame, text="Price:", anchor="w").grid(row=4, column=0, sticky='e')
+        Label(part_info_frame, text=component["metadata"]["price"], anchor="w").grid(row=4, column=1, sticky='w')
 
         # Populate Meta Data similarly
-        Label(meta_frame, text=f"Price:", anchor="w").grid(row=1, column=1, sticky="w", padx=2, pady=2)
-        Label(meta_frame, text=component["metadata"]["price"], anchor="w").grid(row=1, column=1, sticky="w", padx=(100,2), pady=2)
-        Label(meta_frame, text=f"Low Stock:", anchor="w").grid(row=2, column=1, sticky="w", padx=2, pady=2)
-        Label(meta_frame, text=component["metadata"]["low_stock"], anchor="w").grid(row=2, column=1, sticky="w", padx=(100,2), pady=2)
-        Label(meta_frame, text=f"Description:", anchor="w").grid(row=3, column=1, sticky="w", padx=2, pady=2)
-        Label(meta_frame, text=component["metadata"]["description"], anchor="w").grid(row=3, column=1, sticky="w", padx=(100,2), pady=2)
-        Label(meta_frame, text=f"In Use?:", anchor="w").grid(row=4, column=1, sticky="w", padx=2, pady=2)
-        Label(meta_frame, text=component["metadata"]["in_use"], anchor="w").grid(row=4, column=1, sticky="w", padx=(100,2), pady=2)
+        #Label(meta_frame, text=f"Price:", anchor="w").grid(row=1, column=1, sticky="w", padx=2, pady=2)
+        #Label(meta_frame, text=component["metadata"]["price"], anchor="w").grid(row=1, column=1, sticky="w", padx=(100,2), pady=2)
+        #Label(meta_frame, text=f"Low Stock:", anchor="w").grid(row=2, column=1, sticky="w", padx=2, pady=2)
+        #Label(meta_frame, text=component["metadata"]["low_stock"], anchor="w").grid(row=2, column=1, sticky="w", padx=(100,2), pady=2)
+        #Label(meta_frame, text=f"Description:", anchor="w").grid(row=3, column=1, sticky="w", padx=2, pady=2)
+        #Label(meta_frame, text=component["metadata"]["description"], anchor="w").grid(row=3, column=1, sticky="w", padx=(100,2), pady=2)
+        #Label(meta_frame, text=f"In Use?:", anchor="w").grid(row=4, column=1, sticky="w", padx=2, pady=2)
+        #Label(meta_frame, text=component["metadata"]["in_use"], anchor="w").grid(row=4, column=1, sticky="w", padx=(100,2), pady=2)
 
         highlight_state = {"on": False}  # Track whether the LED is currently highlighted.
 
         highlight_color = (0, 255, 0)
 
         highlight_button = Button(self.details_frame, text="Highlight", width=10)
-        highlight_button.grid(row=6, column=0, columnspan=2, pady=10, sticky="e")
+        highlight_button.grid(row=6, column=0, columnspan=2, pady=5, sticky="e")
 
         def toggle_highlight():
             if not highlight_state["on"]:
@@ -679,8 +688,8 @@ class Frontend:
                 highlight_state["on"] = False
 
         highlight_button.config(command=toggle_highlight)
-        Button(self.details_frame, text="Checkout", command=lambda: self.checkout_component(tree)).grid(row=6, column=0, columnspan=2, pady=10)
-        Button(self.details_frame, text="Edit Component", command=lambda: self.edit_component(tree)).grid(row=6, column=0, columnspan=2, pady=10, sticky="w")
+        Button(self.details_frame, text="Checkout", command=lambda: self.checkout_component(tree)).grid(row=6, column=0, columnspan=2)
+        Button(self.details_frame, text="Edit Component", command=lambda: self.edit_component(tree)).grid(row=6, column=0, columnspan=2, sticky="w")
 
     def edit_component(self, tree):
         selected_item = tree.selection()
@@ -763,7 +772,6 @@ class Frontend:
                 highlight_state["on"] = False
 
         imageFromCache = io.BytesIO(self.imageCache.getImage(metadata_fields['photo_url'].get()))
-        print(type(imageFromCache))
         
         previewImage = ImageTk.PhotoImage(Image.open(imageFromCache).resize((125,125)))
         #image_label = Label(edit_window, image=previewImage, height=125, width=125, bg="red")
