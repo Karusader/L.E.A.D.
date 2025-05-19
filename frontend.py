@@ -182,10 +182,24 @@ class Frontend:
         search_entry = Entry(self.current_frame, width=80)
         search_entry.grid(row=2, column=0, padx=10, pady=5, sticky="ew", columnspan=3)
 
-        self.details_frame = Frame(self.current_frame, bd=2, relief="groove", padx=10, pady=20)
-        self.details_frame.grid(row=0, column=3, columnspan=2, rowspan=5, sticky="nsew", padx=10)
-        self.details_label = Label(self.details_frame, text="Component Details will appear here", justify="left")
-        self.details_label.pack(fill="both", expand=True)
+        self.details_frame = Frame(self.current_frame, bd=2, relief="groove", padx=10, pady=10)
+        self.details_frame.grid(row=0, column=4, columnspan=2, rowspan=5, sticky="nsew", padx=10)
+
+        self.part_button_frame = Frame(self.current_frame, bd=2, relief="groove", padx=10)
+        self.part_button_frame.grid(row=5, column=4, columnspan=2, sticky="nsew", padx=10)
+
+        self.global_action_frame = Frame(self.current_frame, bd=2, relief="groove", padx=10)
+        self.global_action_frame.grid(row=5, column=0, columnspan=3, sticky="nsew", padx=10)
+
+        Button(self.global_action_frame, text="Unhighlight All").grid(row=1, column=1,padx=10, pady=5)
+
+
+
+        #self.details_label = Label(self.details_frame, text="Component Details will appear here", justify="left")
+        #self.details_label.pack(fill="both", expand=True)
+
+        self.part_info_frame = Frame(self.details_frame, bd=1, relief="solid", padx=5, pady=5, width=100)
+        self.part_info_frame.grid(row=0, column=0, sticky="nsew", padx=5, pady=5)
 
         # Table of components
         search_tree = Treeview(self.current_frame, columns=("Part Number", "Manufacturer Number", "Location", "Count", "Type"), show="headings")
@@ -607,11 +621,11 @@ class Frontend:
         tree = event.widget
         selected = tree.selection()
 
-        if not selected:
-            for widget in self.details_frame.winfo_children():
-                widget.destroy()
-            Label(self.details_frame, text="No component selected", justify="left").pack(fill="both", expand=True)
-            return
+        #if not selected:
+        #    for widget in self.details_frame.winfo_children():
+        #        widget.destroy()
+        #    Label(self.details_frame, text="No component selected", justify="left").pack(fill="both", expand=True)
+        #    return
 
         # Get the part number from the selected row (assumed to be the first column)
         item = tree.item(selected[0], "values")
@@ -631,34 +645,34 @@ class Frontend:
             widget.destroy()
 
         # Create two subframes: one for Part Info and one for Meta Data
-        part_info_frame = Frame(self.details_frame, bd=1, relief="solid", padx=5, pady=5, width=100)
-        part_info_frame.grid(row=0, column=0, sticky="nsew", padx=5, pady=5)
+        self.part_info_frame = Frame(self.details_frame, bd=1, relief="solid", padx=5, pady=5, width=100)
+        self.part_info_frame.grid(row=0, column=0, sticky="nsew", padx=5, pady=5)
         #meta_frame = Frame(self.details_frame, bd=1, relief="solid", padx=5, width=250, pady=5)
         #meta_frame.grid(row=0, column=1, sticky="nsew", padx=5, pady=5)
         self.details_frame.columnconfigure(0, weight=1, minsize=100)
         #self.details_frame.columnconfigure(1, weight=1, minsize=250)
         #meta_frame.grid_propagate(False)
-        #part_info_frame.grid_propagate(False)
+        #self.part_info_frame.grid_propagate(False)
 
         # Headers
-        Label(part_info_frame, text="Part Info", font=("Arial", 12, "bold")).grid(row=0, column=0, padx=10,)
+        Label(self.part_info_frame, text="Part Info", font=("Arial", 12, "bold")).grid(row=0, column=0, padx=10,)
         #Label(meta_frame, text="Meta Data", font=("Arial", 12, "bold")).grid(row=0, column=0, columnspan=2, pady=0)
 
         # Populate Part Info (each key-value pair on its own row)
         #row_idx = 1
         #for key, value in component["part_info"].items():
-        #    Label(part_info_frame, text=f"{key}:", anchor="w").grid(row=row_idx, column=0, sticky="w", padx=2, pady=2)
-        #    Label(part_info_frame, text=f"{value}", anchor="w").grid(row=row_idx, column=0, sticky="w", padx=(100,2), pady=2)
+        #    Label(self.part_info_frame, text=f"{key}:", anchor="w").grid(row=row_idx, column=0, sticky="w", padx=2, pady=2)
+        #    Label(self.part_info_frame, text=f"{value}", anchor="w").grid(row=row_idx, column=0, sticky="w", padx=(100,2), pady=2)
         #    row_idx += 1
 
-        Label(part_info_frame, text="Digikey Part:", anchor="w").grid(row=1, column=0, sticky='e')
-        Label(part_info_frame, text=component["part_info"]["part_number"], anchor="w").grid(row=1, column=1, sticky='w')
-        Label(part_info_frame, text="In Stock:", anchor="w").grid(row=2, column=0, sticky='e')
-        Label(part_info_frame, text=component["part_info"]["count"], anchor="w",).grid(row=2, column=1, sticky='w')
-        Label(part_info_frame, text="Part Type:", anchor="w").grid(row=3, column=0, sticky='e')
-        Label(part_info_frame, text=component["part_info"]["type"], anchor="w").grid(row=3, column=1, sticky='w')
-        Label(part_info_frame, text="Price:", anchor="w").grid(row=4, column=0, sticky='e')
-        Label(part_info_frame, text=component["metadata"]["price"], anchor="w").grid(row=4, column=1, sticky='w')
+        Label(self.part_info_frame, text="Digikey Part:", anchor="w").grid(row=1, column=0, sticky='e')
+        Label(self.part_info_frame, text="In Stock:", anchor="w").grid(row=2, column=0, sticky='e')
+        Label(self.part_info_frame, text="Part Type:", anchor="w").grid(row=3, column=0, sticky='e')
+        Label(self.part_info_frame, text="Price:", anchor="w").grid(row=4, column=0, sticky='e')
+        Label(self.part_info_frame, text=component["part_info"]["part_number"], anchor="w").grid(row=1, column=1, sticky='w')
+        Label(self.part_info_frame, text=component["part_info"]["count"], anchor="w",).grid(row=2, column=1, sticky='w')
+        Label(self.part_info_frame, text=component["part_info"]["type"], anchor="w").grid(row=3, column=1, sticky='w')
+        Label(self.part_info_frame, text=component["metadata"]["price"], anchor="w").grid(row=4, column=1, sticky='w')
 
         # Populate Meta Data similarly
         #Label(meta_frame, text=f"Price:", anchor="w").grid(row=1, column=1, sticky="w", padx=2, pady=2)
@@ -674,8 +688,8 @@ class Frontend:
 
         highlight_color = (0, 255, 0)
 
-        highlight_button = Button(self.details_frame, text="Highlight", width=10)
-        highlight_button.grid(row=6, column=0, columnspan=2, pady=5, sticky="e")
+        highlight_button = Button(self.part_button_frame, text="Highlight", width=10)
+        highlight_button.grid(row=1, column=0, pady=5, sticky="e",padx=10)
 
         def toggle_highlight():
             if not highlight_state["on"]:
@@ -688,8 +702,8 @@ class Frontend:
                 highlight_state["on"] = False
 
         highlight_button.config(command=toggle_highlight)
-        Button(self.details_frame, text="Checkout", command=lambda: self.checkout_component(tree)).grid(row=6, column=0, columnspan=2)
-        Button(self.details_frame, text="Edit Component", command=lambda: self.edit_component(tree)).grid(row=6, column=0, columnspan=2, sticky="w")
+        Button(self.part_button_frame, text="Checkout", command=lambda: self.checkout_component(tree)).grid(row=1, column=1,padx=10)
+        Button(self.part_button_frame, text="Edit Component", command=lambda: self.edit_component(tree)).grid(row=1, column=2,padx=10)
 
     def edit_component(self, tree):
         selected_item = tree.selection()
