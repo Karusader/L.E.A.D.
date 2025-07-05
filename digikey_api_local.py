@@ -7,8 +7,13 @@ import json
 import os
 import time
 from tkinter import messagebox, simpledialog
+from dataclasses import dataclass
 import webbrowser
 
+@dataclass
+class DigiKeyPackItem:
+    DigiKeyPartNumber: str
+    Quantity: int
 
 class Digikey_API_Call:
     ACCESS_TOKEN: str
@@ -280,4 +285,40 @@ class Digikey_API_Call:
 
         except requests.exceptions.RequestException as req_error:
             messagebox.showerror("Connection Error", f"A network error happened: \n{str(req_error)}")
+
+
+
+    def get_package_list_from_barcode(self, barcode):
+        
+        if not self.ACCESS_TOKEN or time.time() > self.TOKEN_EXPIRES:
+            self.refresh_access_token()
+
+        defaultHeaders = {
+            'Authorization': 'Bearer ' + self.ACCESS_TOKEN,
+            'X-DIGIKEY-Client-Id': self.CLIENT_ID,
+            'Content-Type': 'application/json',
+            'X-DIGIKEY-Locale-Site': 'US', 
+            'X-DIGIKEY-Locale-Language': 'en', 
+            'X-DIGIKEY-Locale-Currency': 'USD'
+        }
+
+        try:
+            response = requests.get("api.digikey.com/Barcoding/v3/PackListBarcodes/%s" % (barcode), headers=defaultHeaders, timeout=5)
+
+            response.raise_for_status()
+
+            
+
+            partList = tuple(json.loads(response.content["PackListDetails"]))
+
+            return partList
+
+        except requests.exceptions.HTTPError as http_error:
+            self._handle_digikey_error(http_error)
+
+        except requests.exceptions.RequestException as req_error:
+            messagebox.showerror("Connection Error", f"A network error happened: \n{str(req_error)}")
+
+
+
 
